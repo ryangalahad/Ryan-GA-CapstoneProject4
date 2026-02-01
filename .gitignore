@@ -1,3 +1,5 @@
+# Ignore large OpenSanctions data file
+backendExpress/data/watchlist.json
 # Compiled source #
 ###################
 *.com
