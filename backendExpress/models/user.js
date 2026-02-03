@@ -28,6 +28,12 @@ export const userSchema = {
     type: 'string',
     enum: ["male", "female"],
     required: true
+  },
+  role: {
+    type: 'string',
+    enum: ['officer', 'manager'],
+    default: 'officer',
+    required: true
   }
 };
 
