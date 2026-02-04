@@ -3,7 +3,7 @@ import * as caseModel from "../models/cases.js";
 // Get all cases
 export async function getAllCases(req, res) {
   try {
-    const cases = await caseModel.getAllCases();
+    const cases = await caseModel.Case.getAllCases();
     res.json({ success: true, data: cases });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -14,7 +14,7 @@ export async function getAllCases(req, res) {
 export async function getCaseById(req, res) {
   try {
     const { id } = req.params;
-    const caseData = await caseModel.getCaseById(id);
+    const caseData = await caseModel.Case.getCaseById(id);
 
     if (!caseData) {
       return res.status(404).json({ success: false, error: "Case not found" });
@@ -29,20 +29,25 @@ export async function getCaseById(req, res) {
 // Create new case
 export async function createCase(req, res) {
   try {
-    const { name, description, status, assignedUser } = req.body;
+    const { officer_id, entity_id, input_name, match_score, priority } =
+      req.body;
 
     // Simple validation
-    if (!name) {
+    if (!officer_id || !entity_id || !input_name) {
       return res
         .status(400)
-        .json({ success: false, error: "Case name required" });
+        .json({
+          success: false,
+          error: "officer_id, entity_id, and input_name are required",
+        });
     }
 
-    const newCase = await caseModel.createCase({
-      name,
-      description,
-      status: status || "open",
-      assignedUser,
+    const newCase = await caseModel.Case.create({
+      officer_id,
+      entity_id,
+      input_name,
+      match_score: match_score || 0,
+      priority: priority || "medium",
     });
 
     res.status(201).json({ success: true, data: newCase });
@@ -55,13 +60,13 @@ export async function createCase(req, res) {
 export async function updateCase(req, res) {
   try {
     const { id } = req.params;
-    const { name, description, status, assignedUser } = req.body;
+    const { input_name, match_score, priority, officer_id } = req.body;
 
-    const updatedCase = await caseModel.updateCase(id, {
-      name,
-      description,
-      status,
-      assignedUser,
+    const updatedCase = await caseModel.Case.updateCase(id, {
+      input_name,
+      match_score,
+      priority,
+      officer_id,
     });
 
     res.json({ success: true, data: updatedCase });
@@ -74,7 +79,7 @@ export async function updateCase(req, res) {
 export async function deleteCase(req, res) {
   try {
     const { id } = req.params;
-    await caseModel.deleteCase(id);
+    await caseModel.Case.deleteCase(id);
     res.json({ success: true, message: "Case deleted" });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
@@ -93,7 +98,7 @@ export async function assignCaseToOfficer(req, res) {
         .json({ success: false, error: "Officer ID required" });
     }
 
-    const result = await caseModel.assignCaseToOfficer(caseId, officerId);
+    const result = await caseModel.Case.assignCaseToOfficer(caseId, officerId);
     res.json({
       success: true,
       message: `Case assigned to officer ${officerId}`,
@@ -116,7 +121,7 @@ export async function addEntityToCase(req, res) {
         .json({ success: false, error: "Entity ID required" });
     }
 
-    const result = await caseModel.addEntityToCase(caseId, entityId);
+    const result = await caseModel.Case.addEntityToCase(caseId, entityId);
     res.json({ success: true, data: result });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
