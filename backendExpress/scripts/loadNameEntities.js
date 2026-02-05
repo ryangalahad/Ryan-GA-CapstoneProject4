@@ -23,7 +23,7 @@ const pool = new Pool({
 
 async function loadNameEntities() {
   try {
-    console.log("Starting to load name entities into PostgreSQL...");
+    console.log("Starting to load Person entities into PostgreSQL...");
     console.log(
       `Connecting to database: ${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`,
     );
@@ -32,6 +32,31 @@ async function loadNameEntities() {
       console.error(`File not found: ${TARGET_PATH}`);
       process.exit(1);
     }
+
+    // Drop existing table
+    console.log("Dropping existing name_entities table...");
+    await pool.query("DROP TABLE IF EXISTS name_entities CASCADE;");
+
+    // Create table with comprehensive Person schema
+    console.log("Creating name_entities table for Persons...");
+    await pool.query(`
+      CREATE TABLE name_entities (
+        id SERIAL PRIMARY KEY,
+        caption VARCHAR(500) NOT NULL,
+        schema VARCHAR(50) NOT NULL DEFAULT 'Person',
+        entity_id VARCHAR(500) UNIQUE,
+        nationality VARCHAR(255),
+        birthdate TEXT,
+        gender VARCHAR(50),
+        first_name VARCHAR(255),
+        last_name VARCHAR(255),
+        name_aliases TEXT,
+        position TEXT,
+        address TEXT,
+        properties JSONB,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+      );
+    `);
 
     console.log("Reading NDJSON file...");
     const fileStream = fs.createReadStream(TARGET_PATH);
@@ -74,7 +99,7 @@ async function loadNameEntities() {
     }
 
     console.log(
-      `✓ Successfully loaded ${insertedCount} entities into name_entities! (${errorCount} skipped)`,
+      `✓ Successfully loaded ${insertedCount} Person entities into name_entities! (${errorCount} skipped)`,
     );
     await pool.end();
     process.exit(0);
@@ -92,27 +117,63 @@ async function insertBatch(batch) {
   try {
     const values = batch
       .map((_, idx) => {
-        const offset = idx * 11;
-        return `($${offset + 1}, $${offset + 2}, $${offset + 3}, $${offset + 4}, $${offset + 5}, $${offset + 6}, $${offset + 7}, $${offset + 8}, $${offset + 9}, $${offset + 10}, $${offset + 11})`;
+        const offset = idx * 13;
+        return `($${offset + 1}, $${offset + 2}, $${offset + 3}, $${offset + 4}, $${offset + 5}, $${offset + 6}, $${offset + 7}, $${offset + 8}, $${offset + 9}, $${offset + 10}, $${offset + 11}, $${offset + 12}, $${offset + 13})`;
       })
       .join(",");
 
-    const params = batch.flatMap((entity) => [
-      entity.id || null,
-      entity.name || "Unknown",
-      entity.firstName || null,
-      entity.lastName || null,
-      entity.aliases ? JSON.stringify(entity.aliases) : null,
-      entity.birthDate || null,
-      entity.country || null,
-      entity.schema || null,
-      entity.datasets ? entity.datasets.join(", ") : null,
-      entity.riskLevel || null,
-      JSON.stringify(entity),
-    ]);
+    const params = batch.flatMap((entity) => {
+      const props = entity.properties || {};
+
+      // Extract birthdate as string (store as-is from JSON)
+      const birthdate = props.birthDate || null;
+
+      // Extract nationality from properties
+      const nationality = props.nationality || props.country || null;
+
+      // Extract gender
+      const gender = props.gender || null;
+
+      // Extract position
+      const position = props.position || null;
+
+      // Extract address
+      const address = props.address || null;
+
+      // Extract name aliases - use 'alias' field from properties if available
+      let nameAliases = null;
+      if (props.alias && Array.isArray(props.alias)) {
+        nameAliases = props.alias.join(", ");
+      }
+
+      // Split name into first and last
+      const caption = entity.caption || "";
+      const nameParts = caption.trim().split(/\s+/);
+      const lastName = nameParts[nameParts.length - 1] || "";
+      const firstName = nameParts.slice(0, -1).join(" ") || "";
+
+      return [
+        caption, // caption
+        "Person", // schema
+        entity.id || null, // entity_id
+        nationality, // nationality
+        birthdate, // birthdate (as string)
+        gender, // gender
+        firstName, // first_name
+        lastName, // last_name
+        nameAliases, // name_aliases
+        position, // position
+        address, // address
+        JSON.stringify(props), // properties
+        new Date().toISOString(), // created_at
+      ];
+    });
 
     const sql = `
-      INSERT INTO name_entities (entity_id, name, first_name, last_name, aliases, birth_date, country, entity_type, sanctions_list, risk_level, raw_json)
+      INSERT INTO name_entities (
+        caption, schema, entity_id, nationality, birthdate, gender,
+        first_name, last_name, name_aliases, position, address, properties, created_at
+      )
       VALUES ${values}
       ON CONFLICT (entity_id) DO NOTHING
       RETURNING id;
@@ -125,7 +186,7 @@ async function insertBatch(batch) {
     };
   } catch (error) {
     console.error("Error inserting batch:", error.message);
-    throw error;
+    return { inserted: 0, errors: batch.length };
   }
 }
 

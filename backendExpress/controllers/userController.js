@@ -29,17 +29,23 @@ export async function getUserById(req, res) {
 // Create new user
 export async function createUser(req, res) {
   try {
-    const { name, email, role } = req.body;
+    const { name, email, password, role } = req.body;
 
     // Simple validation
-    if (!name || !email) {
+    if (!name || !email || !password) {
       return res
         .status(400)
-        .json({ success: false, error: "Name and email required" });
+        .json({ success: false, error: "Name, email, and password required" });
     }
 
-    const newUser = await userModel.createUser({ name, email, role });
-    res.status(201).json({ success: true, data: newUser });
+    await userModel.createUser({ name, email, password, role });
+
+    // Registration successful - no tokens returned here
+    res.status(201).json({
+      success: true,
+      message:
+        "User registered successfully. Please login to get access token.",
+    });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }
@@ -64,6 +70,38 @@ export async function deleteUser(req, res) {
     const { id } = req.params;
     await userModel.deleteUser(id);
     res.json({ success: true, message: "User deleted" });
+  } catch (error) {
+    res.status(500).json({ success: false, error: error.message });
+  }
+}
+
+// Login user
+export async function loginUser(req, res) {
+  try {
+    const { email, password } = req.body;
+
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        error: "Email and password required",
+      });
+    }
+
+    const result = await userModel.loginUser(email, password);
+
+    if (!result) {
+      return res.status(401).json({
+        success: false,
+        error: "Invalid email or password",
+      });
+    }
+
+    // Return only tokens (hide user data and password)
+    res.json({
+      success: true,
+      accessToken: result.tokens.accessToken,
+      refreshToken: result.tokens.refreshToken,
+    });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
   }

@@ -54,11 +54,11 @@ export function validateUser(req, res, next) {
   }
 
   // Check role if provided
-  const validRoles = ["user", "admin", "analyst"];
+  const validRoles = ["officer", "manager"];
   if (role && !validRoles.includes(role)) {
     return res.status(400).json({
       success: false,
-      error: `Invalid role. Must be: ${validRoles.join(", ")}`,
+      error: `Invalid role. Must be: officer, manager`,
     });
   }
 
