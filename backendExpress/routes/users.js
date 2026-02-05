@@ -5,6 +5,12 @@ import { validateUser } from "../middleware/validation.js";
 
 const router = express.Router();
 
+// REGISTER new user (public - no auth required)
+router.post("/register", validateUser, userController.createUser);
+
+// LOGIN user (public - no auth required)
+router.post("/login", userController.loginUser);
+
 // GET all users (requires manager)
 router.get("/", checkAuth, checkManager, userController.getAllUsers);
 

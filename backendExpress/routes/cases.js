@@ -33,7 +33,6 @@ router.post(
 router.post(
   "/:caseId/entities",
   checkAuth,
-  requireOfficer,
   caseController.addEntityToCase,
 );
 

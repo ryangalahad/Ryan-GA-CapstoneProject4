@@ -10,20 +10,87 @@ const pool = new Pool({
   port: process.env.DB_PORT || 5432,
 });
 
-// Search by name
+// Search by name (caption)
 export async function searchByName(name) {
   const result = await pool.query(
-    "SELECT * FROM name_entities WHERE name ILIKE $1 LIMIT 10",
-    [`%${name}%`]
+    `SELECT 
+      id, caption, schema, entity_id, nationality, birthdate,
+      gender, first_name, last_name, name_aliases, position, address, 
+      jsonb_build_object(
+        'alias', properties->'alias',
+        'gender', properties->'gender',
+        'topics', properties->'topics',
+        'address', properties->'address',
+        'country', properties->'country',
+        'birthDate', properties->'birthDate',
+        'firstName', properties->'firstName',
+        'lastName', properties->'lastName',
+        'createdAt', properties->'createdAt',
+        'name', properties->'name',
+        'notes', properties->'notes',
+        'programId', properties->'programId'
+      ) as properties,
+      created_at
+    FROM name_entities 
+    WHERE caption ILIKE $1 
+    LIMIT 20`,
+    [`%${name}%`],
   );
   return result.rows;
 }
 
-// Search by country
-export async function searchByCountry(country) {
+// Search by nationality
+export async function searchByNationality(nationality) {
   const result = await pool.query(
-    "SELECT * FROM name_entities WHERE country = $1",
-    [country]
+    `SELECT 
+      id, caption, schema, entity_id, nationality, birthdate,
+      gender, first_name, last_name, name_aliases, position, address, 
+      jsonb_build_object(
+        'alias', properties->'alias',
+        'gender', properties->'gender',
+        'topics', properties->'topics',
+        'address', properties->'address',
+        'country', properties->'country',
+        'birthDate', properties->'birthDate',
+        'firstName', properties->'firstName',
+        'lastName', properties->'lastName',
+        'createdAt', properties->'createdAt',
+        'name', properties->'name',
+        'notes', properties->'notes',
+        'programId', properties->'programId'
+      ) as properties,
+      created_at
+    FROM name_entities 
+    WHERE nationality = $1`,
+    [nationality],
+  );
+  return result.rows;
+}
+
+// Search by topic (sanction/debarment/wanted)
+export async function searchByTopic(topic) {
+  const result = await pool.query(
+    `SELECT 
+      id, caption, schema, entity_id, nationality, birthdate,
+      gender, first_name, last_name, name_aliases, position, address, 
+      jsonb_build_object(
+        'alias', properties->'alias',
+        'gender', properties->'gender',
+        'topics', properties->'topics',
+        'address', properties->'address',
+        'country', properties->'country',
+        'birthDate', properties->'birthDate',
+        'firstName', properties->'firstName',
+        'lastName', properties->'lastName',
+        'createdAt', properties->'createdAt',
+        'name', properties->'name',
+        'notes', properties->'notes',
+        'programId', properties->'programId'
+      ) as properties,
+      created_at
+    FROM name_entities 
+    WHERE properties->>'topics' ILIKE $1`,
+    [`%${topic}%`],
   );
   return result.rows;
 }
