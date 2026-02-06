@@ -19,7 +19,7 @@ async function createNameEntitiesTable() {
     console.log("Creating name_entities table...");
 
     const createTableSQL = `
-      CREATE TABLE IF NOT EXISTS name_entities (
+      CREATE TABLE IF NOT EXISTS name_entities ( 
         id SERIAL PRIMARY KEY,
         entity_id VARCHAR(100) UNIQUE NOT NULL,
         name VARCHAR(1000) NOT NULL,
