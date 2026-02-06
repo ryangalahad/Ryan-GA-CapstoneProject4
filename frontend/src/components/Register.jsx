@@ -17,10 +17,9 @@ export default function Register({ onToggle, onRegisterSuccess }) {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [e.target.name]: e.target.value,
     }));
     setError("");
   };
@@ -150,6 +149,9 @@ export default function Register({ onToggle, onRegisterSuccess }) {
                 required
                 disabled={loading}
               >
+                <option disabled value="">
+                  -- Choose Gender --
+                </option>
                 <option value="male">Male</option>
                 <option value="female">Female</option>
                 <option value="other">Other</option>
@@ -166,6 +168,9 @@ export default function Register({ onToggle, onRegisterSuccess }) {
                 required
                 disabled={loading}
               >
+                <option disabled value="">
+                  -- Choose Role --
+                </option>
                 <option value="officer">Officer</option>
                 <option value="manager">Manager</option>
               </select>

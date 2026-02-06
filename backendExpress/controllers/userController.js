@@ -33,22 +33,18 @@ export async function createUser(req, res) {
 
     // Simple validation
     if (!name || !email || !password || !gender) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: "Name, email, password, and gender required",
-        });
+      return res.status(400).json({
+        success: false,
+        error: "Name, email, password, and gender required",
+      });
     }
 
     // Validate gender
     if (!["male", "female", "other"].includes(gender)) {
-      return res
-        .status(400)
-        .json({
-          success: false,
-          error: "Gender must be male, female, or other",
-        });
+      return res.status(400).json({
+        success: false,
+        error: "Gender must be male, female, or other",
+      });
     }
 
     await userModel.createUser({ name, email, password, gender, role });
@@ -109,11 +105,12 @@ export async function loginUser(req, res) {
       });
     }
 
-    // Return only tokens (hide user data and password)
+    // Return tokens and user data
     res.json({
       success: true,
       accessToken: result.tokens.accessToken,
       refreshToken: result.tokens.refreshToken,
+      user: result.user,
     });
   } catch (error) {
     res.status(500).json({ success: false, error: error.message });
