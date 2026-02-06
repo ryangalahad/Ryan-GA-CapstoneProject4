@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import AuthPage from "./components/AuthPage";
+import Dashboard from "./components/Dashboard";
 import authService from "./services/authService";
 import "./App.css";
 
@@ -9,10 +10,20 @@ function App() {
 
   useEffect(() => {
     // Check if user is already logged in
-    if (authService.isLoggedIn()) {
-      const user = authService.getCurrentUser();
-      setCurrentUser(user);
-      setIsLoggedIn(true);
+    try {
+      if (authService.isLoggedIn()) {
+        const user = authService.getCurrentUser();
+        if (user) {
+          setCurrentUser(user);
+          setIsLoggedIn(true);
+        }
+      }
+    } catch (error) {
+      console.error("Error checking login status:", error);
+      // Clear auth data on error
+      authService.logout();
+      setIsLoggedIn(false);
+      setCurrentUser(null);
     }
   }, []);
 
@@ -31,74 +42,7 @@ function App() {
     return <AuthPage onLoginSuccess={handleLoginSuccess} />;
   }
 
-  return (
-    <div className="app-container">
-      <nav className="app-navbar">
-        <div className="navbar-content">
-          <h2>Compliance Platform</h2>
-          <div className="user-info">
-            <span>Welcome, {currentUser?.name}!</span>
-            <button onClick={handleLogout} className="logout-btn">
-              Logout
-            </button>
-          </div>
-        </div>
-      </nav>
-
-      <div className="app-content">
-        <div className="dashboard">
-          <h1>Dashboard</h1>
-          <div className="user-profile">
-            <h2>Your Profile</h2>
-            <div className="profile-info">
-              <p>
-                <strong>Name:</strong> {currentUser?.name}
-              </p>
-              <p>
-                <strong>Email:</strong> {currentUser?.email}
-              </p>
-              <p>
-                <strong>Gender:</strong> {currentUser?.gender}
-              </p>
-              <p>
-                <strong>Role:</strong>{" "}
-                <span className="role-badge">{currentUser?.role}</span>
-              </p>
-            </div>
-          </div>
-
-          <div className="features">
-            <h2>Available Features</h2>
-            <div className="feature-grid">
-              <div className="feature-card">
-                <h3>Search Entities</h3>
-                <p>Search through 40,000 sanctioned persons and entities</p>
-                <button className="feature-btn">Coming Soon</button>
-              </div>
-
-              <div className="feature-card">
-                <h3>Case Management</h3>
-                <p>Manage compliance cases and investigations</p>
-                <button className="feature-btn">Coming Soon</button>
-              </div>
-
-              <div className="feature-card">
-                <h3>Reports</h3>
-                <p>Generate compliance reports and analytics</p>
-                <button className="feature-btn">Coming Soon</button>
-              </div>
-
-              <div className="feature-card">
-                <h3>Settings</h3>
-                <p>Manage your account and preferences</p>
-                <button className="feature-btn">Coming Soon</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
+  return <Dashboard user={currentUser} onLogout={handleLogout} />;
 }
 
 export default App;

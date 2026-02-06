@@ -7,7 +7,9 @@ const authService = {
   // Register new user
   register: async (userData) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/users/register`,userData,
+      const response = await axios.post(
+        `${API_BASE_URL}/users/register`,
+        userData,
       );
       return response.data;
     } catch (error) {
@@ -47,8 +49,17 @@ const authService = {
 
   // Get current user
   getCurrentUser: () => {
-    const user = localStorage.getItem("user");
-    return user ? JSON.parse(user) : null;
+    try {
+      const user = localStorage.getItem("user");
+      if (!user || user === "undefined") {
+        return null;
+      }
+      return JSON.parse(user);
+    } catch (error) {
+      console.error("Error parsing user from localStorage:", error);
+      localStorage.removeItem("user");
+      return null;
+    }
   },
 
   // Get access token
