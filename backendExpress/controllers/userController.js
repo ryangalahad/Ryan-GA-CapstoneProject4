@@ -29,16 +29,29 @@ export async function getUserById(req, res) {
 // Create new user
 export async function createUser(req, res) {
   try {
-    const { name, email, password, role } = req.body;
+    const { name, email, password, gender, role } = req.body;
 
     // Simple validation
-    if (!name || !email || !password) {
+    if (!name || !email || !password || !gender) {
       return res
         .status(400)
-        .json({ success: false, error: "Name, email, and password required" });
+        .json({
+          success: false,
+          error: "Name, email, password, and gender required",
+        });
     }
 
-    await userModel.createUser({ name, email, password, role });
+    // Validate gender
+    if (!["male", "female", "other"].includes(gender)) {
+      return res
+        .status(400)
+        .json({
+          success: false,
+          error: "Gender must be male, female, or other",
+        });
+    }
+
+    await userModel.createUser({ name, email, password, gender, role });
 
     // Registration successful - no tokens returned here
     res.status(201).json({

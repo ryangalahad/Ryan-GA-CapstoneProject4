@@ -45,19 +45,20 @@ export const createUserTableSQL = `
     name VARCHAR(255) NOT NULL,
     email VARCHAR(255) NOT NULL UNIQUE,
     password VARCHAR(255) NOT NULL,
+    gender VARCHAR(50) NOT NULL,
     role VARCHAR(50) NOT NULL,
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
   );
 `;
 
 // Create a new user
-export async function createUser({ name, email, password, role }) {
+export async function createUser({ name, email, password, gender, role }) {
   const sql = `
-    INSERT INTO users (name, email, password, role)
-    VALUES ($1, $2, $3, $4)
+    INSERT INTO users (name, email, password, gender, role)
+    VALUES ($1, $2, $3, $4, $5)
     RETURNING *;
   `;
-  const result = await query(sql, [name, email, password, role]);
+  const result = await query(sql, [name, email, password, gender, role]);
   const user = result.rows[0];
 
   // Generate tokens for the new user
@@ -85,14 +86,14 @@ export function generateTokens(userId, role) {
 
 // Get all users
 export async function getAllUsers() {
-  const sql = `SELECT id, name, email, role, createdAt FROM users;`;
+  const sql = `SELECT id, name, email, gender, role, createdAt FROM users;`;
   const result = await query(sql);
   return result.rows;
 }
 
 // Get user by ID
 export async function getUserById(id) {
-  const sql = `SELECT id, name, email, role, createdAt FROM users WHERE id = $1;`;
+  const sql = `SELECT id, name, email, gender, role, createdAt FROM users WHERE id = $1;`;
   const result = await query(sql, [id]);
   return result.rows[0];
 }
@@ -106,7 +107,7 @@ export async function deleteUser(id) {
 
 // Login user (verify password)
 export async function loginUser(email, password) {
-  const sql = `SELECT id, name, email, role, password FROM users WHERE email = $1;`;
+  const sql = `SELECT id, name, email, gender, role, password FROM users WHERE email = $1;`;
   const result = await query(sql, [email]);
   const user = result.rows[0];
 
@@ -122,7 +123,13 @@ export async function loginUser(email, password) {
   // Generate tokens
   const tokens = generateTokens(user.id, user.role);
   return {
-    user: { id: user.id, name: user.name, email: user.email, role: user.role },
+    user: {
+      id: user.id,
+      name: user.name,
+      email: user.email,
+      gender: user.gender,
+      role: user.role,
+    },
     tokens,
   };
 }
