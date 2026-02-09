@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import authService from "../services/authService";
 import "../styles/SearchFeature.css";
 
-export default function SearchFeature() {
+export default function SearchFeature({ onAddToCase }) {
   const [name, setName] = useState("");
   const [country, setCountry] = useState("");
   const [countries, setCountries] = useState([]);
@@ -80,6 +80,71 @@ export default function SearchFeature() {
     return country ? country.name : code;
   };
 
+  const formatCountryWithCode = (code) => {
+    const country = countries.find((c) => c.code === code);
+    return country ? `${country.name} (${code})` : code;
+  };
+
+  const parseJsonValue = (value) => {
+    if (!value) return "N/A";
+
+    if (typeof value === "string") {
+      // Handle PostgreSQL array syntax like {"value"} or {value}
+      if (value.startsWith("{") && value.endsWith("}")) {
+        // Remove the curly braces
+        let cleaned = value.slice(1, -1);
+        // Remove quotes if present
+        cleaned = cleaned.replace(/^"(.*)"$/, "$1");
+        return cleaned || "N/A";
+      }
+
+      try {
+        // Try to parse as JSON
+        const parsed = JSON.parse(value);
+        // If it's a string, return it; otherwise convert to string
+        return typeof parsed === "string" ? parsed : String(parsed);
+      } catch (e) {
+        // Not valid JSON, return as-is
+        return value;
+      }
+    }
+
+    return String(value);
+  };
+
+  const formatTopics = (topicsData) => {
+    if (!topicsData) return [];
+
+    // Handle if it's already an array
+    if (Array.isArray(topicsData)) {
+      return topicsData.map((topic) =>
+        typeof topic === "string"
+          ? topic.toUpperCase()
+          : String(topic).toUpperCase(),
+      );
+    }
+
+    // Handle if it's a JSON string like '["topic1","topic2"]'
+    if (typeof topicsData === "string") {
+      try {
+        const parsed = JSON.parse(topicsData);
+        if (Array.isArray(parsed)) {
+          return parsed.map((topic) =>
+            typeof topic === "string"
+              ? topic.toUpperCase()
+              : String(topic).toUpperCase(),
+          );
+        }
+        return [topicsData.toUpperCase()];
+      } catch (e) {
+        // If not valid JSON, return as array with single item
+        return [topicsData.toUpperCase()];
+      }
+    }
+
+    return [];
+  };
+
   return (
     <div className="search-feature">
       <h1>Search Individuals</h1>
@@ -139,7 +204,7 @@ export default function SearchFeature() {
                 <div className="card-header">
                   <h3 className="person-name">{person.caption}</h3>
                   <span className="card-badge">
-                    {getCountryName(person.nationality)}
+                    {formatCountryWithCode(parseJsonValue(person.nationality))}
                   </span>
                 </div>
 
@@ -157,31 +222,54 @@ export default function SearchFeature() {
                   <div className="info-row">
                     <span className="label">Country:</span>
                     <span className="value">
-                      {getCountryName(person.nationality)}
+                      {formatCountryWithCode(
+                        parseJsonValue(person.nationality),
+                      )}
                     </span>
                   </div>
 
                   <div className="info-row">
                     <span className="label">Birthdate:</span>
-                    <span className="value">{person.birthdate || "N/A"}</span>
+                    <span className="value">
+                      {parseJsonValue(person.birthdate)}
+                    </span>
                   </div>
 
                   <div className="info-row">
                     <span className="label">Gender:</span>
-                    <span className="value">{person.gender || "N/A"}</span>
+                    <span className="value">
+                      {parseJsonValue(person.gender)}
+                    </span>
                   </div>
 
                   <div className="info-row">
                     <span className="label">Address:</span>
-                    <span className="value">{person.address || "N/A"}</span>
+                    <span className="value">
+                      {parseJsonValue(person.address)}
+                    </span>
                   </div>
 
                   {person.properties?.topics && (
-                    <div className="info-row">
+                    <div className="info-section">
                       <span className="label">Topics:</span>
-                      <span className="value">{person.properties.topics}</span>
+                      <div className="topics-container">
+                        {formatTopics(person.properties.topics).map(
+                          (topic, idx) => (
+                            <span key={idx} className="topic-badge">
+                              {topic}
+                            </span>
+                          ),
+                        )}
+                      </div>
                     </div>
                   )}
+
+                  <button
+                    className="add-to-case-btn"
+                    onClick={() => onAddToCase && onAddToCase(person)}
+                  >
+                    Add to Cases
+                  </button>
                 </div>
               </div>
             ))}
