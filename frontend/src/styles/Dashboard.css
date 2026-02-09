@@ -77,6 +77,17 @@
   flex: 1;
 }
 
+.case-count {
+  background: #ffd700;
+  color: #667eea;
+  padding: 2px 8px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 700;
+  min-width: 20px;
+  text-align: center;
+}
+
 .logout-btn {
   display: flex;
   align-items: center;

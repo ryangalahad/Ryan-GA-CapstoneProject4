@@ -1,0 +1,385 @@
+/* Cases Container */
+.cases-container {
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.cases-container h1 {
+  color: #333;
+  margin-bottom: 30px;
+  font-size: 32px;
+}
+
+/* Empty Cases */
+.empty-cases {
+  background: white;
+  border-radius: 12px;
+  padding: 60px 40px;
+  text-align: center;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.empty-cases p {
+  margin: 0;
+  color: #999;
+  font-size: 18px;
+}
+
+/* Cases Section */
+.cases-section {
+  margin-bottom: 30px;
+}
+
+.section-title {
+  color: #333;
+  font-size: 20px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.pending-section .section-title {
+  color: #ff9800;
+  border-bottom-color: #ff9800;
+}
+
+.flagged-section .section-title {
+  color: #f44336;
+  border-bottom-color: #f44336;
+}
+
+/* Cases List */
+.cases-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* Officer Group - For Manager View */
+.officer-group {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  border-left: 4px solid #667eea;
+}
+
+.officer-name {
+  color: #667eea;
+  font-size: 16px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid #d0deff;
+}
+
+/* Case Row - One person per line */
+.case-row {
+  background: white;
+  border-radius: 10px;
+  padding: 16px 12px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.case-row:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+  border-color: #667eea;
+}
+
+/* Case Info Group */
+.case-info-group {
+  flex: 1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  align-items: center;
+}
+
+/* Individual Case Field */
+.case-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 14px;
+  padding: 0 12px;
+  border-right: 1px solid #e0e0e0;
+}
+
+.case-field:last-child {
+  border-right: none;
+}
+
+.case-field.case-name {
+  min-width: 200px;
+  font-weight: 600;
+}
+
+.case-field.case-officer {
+  min-width: 150px;
+  background: #f0f4ff;
+  padding: 4px 12px;
+  border-radius: 5px;
+}
+
+.case-label {
+  color: #333;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.case-value {
+  color: #333;
+}
+
+/* Topics in Case Row */
+.case-field.case-topics {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.case-topics-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.case-topic-badge {
+  background-color: #f0f4ff;
+  color: #667eea;
+  padding: 4px 10px;
+  border-radius: 5px;
+  font-size: 11px;
+  font-weight: 500;
+  border: 1px solid #d0deff;
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* Status Field */
+.case-field.case-status {
+  min-width: 150px;
+}
+
+.status-select {
+  padding: 4px 10px;
+  border: 2px solid #e0e0e0;
+  border-radius: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #333;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-select:hover {
+  border-color: #667eea;
+}
+
+.status-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+}
+
+.status-select option {
+  padding: 8px;
+  text-transform: uppercase;
+  font-weight: 600;
+}
+
+/* Case Row Actions Container */
+.case-row-actions {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Reassignment Field */
+.reassign-field {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.reassign-label {
+  color: #667eea;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  white-space: nowrap;
+}
+
+.reassign-select {
+  padding: 6px 10px;
+  border: 2px solid #667eea;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 500;
+  color: #333;
+  background: white;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 150px;
+}
+
+.reassign-select:hover {
+  border-color: #5568d3;
+  background: #f8f9ff;
+}
+
+.reassign-select:focus {
+  outline: none;
+  border-color: #667eea;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
+}
+
+.reassign-select option {
+  padding: 8px;
+}
+
+/* Clear Button */
+.clear-case-btn {
+  background: #4caf50;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.clear-case-btn:hover {
+  background: #45a049;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(76, 175, 80, 0.3);
+}
+
+.clear-case-btn:active {
+  transform: translateY(0);
+}
+
+/* Remove Button */
+.remove-case-btn {
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.remove-case-btn:hover {
+  background: #d32f2f;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 8px rgba(244, 67, 54, 0.3);
+}
+
+.remove-case-btn:active {
+  transform: translateY(0);
+}
+
+/* History Row */
+.history-row {
+  opacity: 0.9;
+}
+
+.history-row:hover {
+  opacity: 1;
+}
+
+/* Status Readonly */
+.status-readonly {
+  font-weight: 600;
+  color: #667eea;
+  padding: 4px 10px;
+  background: #f0f4ff;
+  border-radius: 5px;
+  font-size: 12px;
+  border: 1px solid #d0deff;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .case-info-group {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .case-field {
+    width: 100%;
+    border-right: none;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 8px 12px;
+  }
+
+  .case-field:last-child {
+    border-bottom: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .cases-container h1 {
+    font-size: 24px;
+  }
+
+  .section-title {
+    font-size: 18px;
+  }
+
+  .case-row {
+    padding: 12px 8px;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .remove-case-btn {
+    align-self: flex-end;
+  }
+
+  .case-row-actions {
+    flex-direction: row;
+    gap: 8px;
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .clear-case-btn,
+  .remove-case-btn {
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .case-field.case-name {
+    min-width: auto;
+  }
+
+  .case-field.case-status {
+    min-width: auto;
+  }
+}
