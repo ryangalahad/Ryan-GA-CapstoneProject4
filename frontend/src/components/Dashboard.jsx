@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import SearchFeature from "./SearchFeature";
 import Cases from "./Cases";
@@ -61,10 +62,9 @@ export default function Dashboard({ user, onLogout }) {
 
   const fetchCountries = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/name-entities/countries`,
+      const { data } = await axios.get(
+        "http://localhost:3000/api/name-entities/countries",
       );
-      const data = await response.json();
       if (data.success) {
         setCountries(data.data);
       }
@@ -76,12 +76,11 @@ export default function Dashboard({ user, onLogout }) {
   const fetchOfficers = async () => {
     try {
       const token = localStorage.getItem("accessToken");
-      const response = await fetch(`http://localhost:3000/api/users`, {
+      const { data } = await axios.get("http://localhost:3000/api/users", {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       });
-      const data = await response.json();
       if (data.success) {
         // Filter to only show officers
         setOfficers(data.data.filter((u) => u.role === "officer"));

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import axios from "axios";
 import authService from "../services/authService";
 import "../styles/SearchFeature.css";
 
@@ -18,10 +19,9 @@ export default function SearchFeature({ onAddToCase }) {
 
   const fetchCountries = async () => {
     try {
-      const response = await fetch(
-        `http://localhost:3000/api/name-entities/countries`,
+      const { data } = await axios.get(
+        "http://localhost:3000/api/name-entities/countries",
       );
-      const data = await response.json();
       if (data.success) {
         setCountries(data.data);
       }
@@ -49,16 +49,15 @@ export default function SearchFeature({ onAddToCase }) {
       if (name.trim()) params.append("name", name);
       if (country) params.append("nationality", country);
 
-      const response = await fetch(
-        `http://localhost:3000/api/name-entities/search?${params}`,
+      const { data } = await axios.get(
+        `http://localhost:3000/api/name-entities/search`,
         {
+          params,
           headers: {
             Authorization: `Bearer ${token}`,
           },
         },
       );
-
-      const data = await response.json();
 
       if (data.success) {
         setResults(data.data);
