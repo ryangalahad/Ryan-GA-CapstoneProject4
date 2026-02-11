@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import AuthPage from "./components/AuthPage";
 import Dashboard from "./components/Dashboard";
 import authService from "./services/authService";
@@ -38,11 +39,38 @@ function App() {
     setCurrentUser(null);
   };
 
-  if (!isLoggedIn) {
-    return <AuthPage onLoginSuccess={handleLoginSuccess} />;
-  }
-
-  return <Dashboard user={currentUser} onLogout={handleLogout} />;
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route
+          path="/login"
+          element={
+            isLoggedIn ? (
+              <Navigate to="/dashboard" replace />
+            ) : (
+              <AuthPage onLoginSuccess={handleLoginSuccess} />
+            )
+          }
+        />
+        <Route
+          path="/dashboard"
+          element={
+            isLoggedIn ? (
+              <Dashboard user={currentUser} onLogout={handleLogout} />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          path="/"
+          element={
+            <Navigate to={isLoggedIn ? "/dashboard" : "/login"} replace />
+          }
+        />
+      </Routes>
+    </BrowserRouter>
+  );
 }
 
 export default App;

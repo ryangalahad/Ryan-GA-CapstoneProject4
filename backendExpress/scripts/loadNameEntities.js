@@ -10,7 +10,7 @@ dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-const TARGET_PATH = path.join(__dirname, "../data/targets-40k.json");
+const TARGET_PATH = path.join(__dirname, "../data/targets-100k.json");
 const BATCH_SIZE = 100;
 
 const pool = new Pool({

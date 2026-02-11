@@ -1,5 +1,5 @@
 // Country code to full name mapping
-// This consolidates all countries available in the targets-40k.json dataset
+// This consolidates all countries available in the targets-100k.json dataset
 export const countryMapping = {
   // European countries
   ru: "Russia",

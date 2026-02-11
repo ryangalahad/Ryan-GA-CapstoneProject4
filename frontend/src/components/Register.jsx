@@ -100,126 +100,135 @@ export default function Register({ onToggle, onRegisterSuccess }) {
 
   return (
     <div className="auth-container">
-      <div className="auth-box">
-        <div className="auth-header">
-          <h1>Create Account</h1>
-          <p>Join our compliance platform</p>
-        </div>
+      <div className="auth-branding">
+        <h1>Compliance Case Management</h1>
+        <p className="tagline">
+          Spotting red flags before they become your problem
+        </p>
+      </div>
 
-        {error && <div className="alert alert-error">{error}</div>}
-        {success && <div className="alert alert-success">{success}</div>}
-
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="name">Full Name *</label>
-            <input
-              type="text"
-              id="name"
-              name="name"
-              value={formData.name}
-              onChange={handleChange}
-              placeholder="John Doe"
-              required
-              disabled={loading}
-            />
+      <div className="auth-form-section">
+        <div className="auth-box">
+          <div className="auth-header">
+            <h1>Create Account</h1>
+            <p>Join our compliance platform</p>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="email">Email Address *</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="john@example.com"
-              required
-              disabled={loading}
-            />
-          </div>
+          {error && <div className="alert alert-error">{error}</div>}
+          {success && <div className="alert alert-success">{success}</div>}
 
-          <div className="form-row">
+          <form className="auth-form" onSubmit={handleSubmit}>
             <div className="form-group">
-              <label htmlFor="gender">Gender *</label>
-              <select
-                id="gender"
-                name="gender"
-                value={formData.gender}
+              <label htmlFor="name">Full Name *</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                value={formData.name}
                 onChange={handleChange}
+                placeholder="John Doe"
                 required
                 disabled={loading}
-              >
-                <option disabled value="">
-                  -- Choose Gender --
-                </option>
-                <option value="male">Male</option>
-                <option value="female">Female</option>
-                <option value="other">Other</option>
-              </select>
+              />
             </div>
 
             <div className="form-group">
-              <label htmlFor="role">Role *</label>
-              <select
-                id="role"
-                name="role"
-                value={formData.role}
+              <label htmlFor="email">Email Address *</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
                 onChange={handleChange}
+                placeholder="john@example.com"
                 required
                 disabled={loading}
-              >
-                <option disabled value="">
-                  -- Choose Role --
-                </option>
-                <option value="officer">Officer</option>
-                <option value="manager">Manager</option>
-              </select>
+              />
             </div>
-          </div>
 
-          <div className="form-group">
-            <label htmlFor="password">Password *</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="At least 6 characters"
-              required
+            <div className="form-row">
+              <div className="form-group">
+                <label htmlFor="gender">Gender *</label>
+                <select
+                  id="gender"
+                  name="gender"
+                  value={formData.gender}
+                  onChange={handleChange}
+                  required
+                  disabled={loading}
+                >
+                  <option disabled value="">
+                    -- Choose Gender --
+                  </option>
+                  <option value="male">Male</option>
+                  <option value="female">Female</option>
+                  <option value="other">Other</option>
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="role">Role *</label>
+                <select
+                  id="role"
+                  name="role"
+                  value={formData.role}
+                  onChange={handleChange}
+                  required
+                  disabled={loading}
+                >
+                  <option disabled value="">
+                    -- Choose Role --
+                  </option>
+                  <option value="officer">Officer</option>
+                  <option value="manager">Manager</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="password">Password *</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="At least 6 characters"
+                required
+                disabled={loading}
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="confirmPassword">Confirm Password *</label>
+              <input
+                type="password"
+                id="confirmPassword"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleChange}
+                placeholder="Confirm your password"
+                required
+                disabled={loading}
+              />
+            </div>
+
+            <button
+              type="submit"
+              className={`submit-btn ${loading ? "loading" : ""}`}
               disabled={loading}
-            />
+            >
+              {loading && <span className="spinner"></span>}
+              {loading ? "Creating Account..." : "Register"}
+            </button>
+          </form>
+
+          <div className="auth-footer">
+            Already have an account?{" "}
+            <a onClick={onToggle} style={{ cursor: "pointer" }}>
+              Login here
+            </a>
           </div>
-
-          <div className="form-group">
-            <label htmlFor="confirmPassword">Confirm Password *</label>
-            <input
-              type="password"
-              id="confirmPassword"
-              name="confirmPassword"
-              value={formData.confirmPassword}
-              onChange={handleChange}
-              placeholder="Confirm your password"
-              required
-              disabled={loading}
-            />
-          </div>
-
-          <button
-            type="submit"
-            className={`submit-btn ${loading ? "loading" : ""}`}
-            disabled={loading}
-          >
-            {loading && <span className="spinner"></span>}
-            {loading ? "Creating Account..." : "Register"}
-          </button>
-        </form>
-
-        <div className="auth-footer">
-          Already have an account?{" "}
-          <a onClick={onToggle} style={{ cursor: "pointer" }}>
-            Login here
-          </a>
         </div>
       </div>
     </div>

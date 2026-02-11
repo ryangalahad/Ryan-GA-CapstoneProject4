@@ -7,7 +7,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const INPUT_PATH = path.join(__dirname, "../data/targets.nested.json");
-const OUTPUT_PATH = path.join(__dirname, "../data/targets-40k-persons.json");
+const OUTPUT_PATH = path.join(__dirname, "../data/targets-100k.json");
 
 // Function to check if name contains English letters (non-Cyrillic)
 function hasEnglishName(name) {
@@ -37,7 +37,7 @@ async function filterPersonData() {
     const writeStream = fs.createWriteStream(OUTPUT_PATH);
     let count = 0;
     let personCount = 0;
-    let maxPersons = 40000;
+    let maxPersons = 100000;
 
     console.log("Reading and filtering entities...");
 

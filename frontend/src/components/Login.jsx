@@ -1,8 +1,10 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import authService from "../services/authService";
 import "../styles/Auth.css";
 
 export default function Login({ onToggle, onLoginSuccess }) {
+  const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -59,12 +61,13 @@ export default function Login({ onToggle, onLoginSuccess }) {
           password: "",
         });
 
-        // Call callback after 1 second
+        // Call callback after 500ms, then navigate
         setTimeout(() => {
           if (onLoginSuccess) {
             onLoginSuccess(response.user);
           }
-        }, 1000);
+          navigate("/dashboard");
+        }, 500);
       }
     } catch (err) {
       setError(err.error || "Login failed. Please check your credentials.");
@@ -75,61 +78,70 @@ export default function Login({ onToggle, onLoginSuccess }) {
 
   return (
     <div className="auth-container">
-      <div className="auth-box">
-        <div className="auth-header">
-          <h1>Welcome Back</h1>
-          <p>Login to your compliance account</p>
-        </div>
+      <div className="auth-branding">
+        <h1>Compliance Case Management</h1>
+        <p className="tagline">
+          Spotting red flags before they become your problem
+        </p>
+      </div>
 
-        {error && <div className="alert alert-error">{error}</div>}
-        {success && <div className="alert alert-success">{success}</div>}
-
-        <form className="auth-form" onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label htmlFor="email">Email Address *</label>
-            <input
-              type="email"
-              id="email"
-              name="email"
-              value={formData.email}
-              onChange={handleChange}
-              placeholder="john@example.com"
-              required
-              disabled={loading}
-              autoComplete="email"
-            />
+      <div className="auth-form-section">
+        <div className="auth-box">
+          <div className="auth-header">
+            <h1>Welcome Back</h1>
+            <p>Login to your compliance account</p>
           </div>
 
-          <div className="form-group">
-            <label htmlFor="password">Password *</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              value={formData.password}
-              onChange={handleChange}
-              placeholder="Enter your password"
-              required
+          {error && <div className="alert alert-error">{error}</div>}
+          {success && <div className="alert alert-success">{success}</div>}
+
+          <form className="auth-form" onSubmit={handleSubmit}>
+            <div className="form-group">
+              <label htmlFor="email">Email Address *</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="john@example.com"
+                required
+                disabled={loading}
+                autoComplete="email"
+              />
+            </div>
+
+            <div className="form-group">
+              <label htmlFor="password">Password *</label>
+              <input
+                type="password"
+                id="password"
+                name="password"
+                value={formData.password}
+                onChange={handleChange}
+                placeholder="Enter your password"
+                required
+                disabled={loading}
+                autoComplete="current-password"
+              />
+            </div>
+
+            <button
+              type="submit"
+              className={`submit-btn ${loading ? "loading" : ""}`}
               disabled={loading}
-              autoComplete="current-password"
-            />
+            >
+              {loading && <span className="spinner"></span>}
+              {loading ? "Logging in..." : "Login"}
+            </button>
+          </form>
+
+          <div className="auth-footer">
+            Don't have an account?{" "}
+            <a onClick={onToggle} style={{ cursor: "pointer" }}>
+              Register here
+            </a>
           </div>
-
-          <button
-            type="submit"
-            className={`submit-btn ${loading ? "loading" : ""}`}
-            disabled={loading}
-          >
-            {loading && <span className="spinner"></span>}
-            {loading ? "Logging in..." : "Login"}
-          </button>
-        </form>
-
-        <div className="auth-footer">
-          Don't have an account?{" "}
-          <a onClick={onToggle} style={{ cursor: "pointer" }}>
-            Register here
-          </a>
         </div>
       </div>
     </div>
