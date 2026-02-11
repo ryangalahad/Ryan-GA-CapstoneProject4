@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import SearchFeature from "./SearchFeature";
 import Cases from "./Cases";
 import History from "./History";
 import "../styles/Dashboard.css";
 
 export default function Dashboard({ user, onLogout }) {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("search");
   const [allCases, setAllCases] = useState([]);
   const [history, setHistory] = useState([]);
@@ -92,7 +94,10 @@ export default function Dashboard({ user, onLogout }) {
   // Filter cases based on user role
   const cases = isManager
     ? allCases.filter(
-        (c) => c.status === "Pending" || c.status?.startsWith("Flag:"),
+        (c) =>
+          c.officer_id === user?.id || // Manager's own cases (any status)
+          c.status === "Pending" ||
+          c.status?.startsWith("Flag:"), // All pending/flagged cases from any officer
       )
     : allCases.filter((c) => c.officer_id === user?.id);
 
@@ -113,9 +118,17 @@ export default function Dashboard({ user, onLogout }) {
   };
 
   const handleRemoveCase = (personId) => {
-    setAllCases(
-      allCases.filter((c) => !(c.id === personId && c.officer_id === user?.id)),
-    );
+    if (isManager) {
+      // Managers can delete any case
+      setAllCases(allCases.filter((c) => c.id !== personId));
+    } else {
+      // Officers can only delete their own cases
+      setAllCases(
+        allCases.filter(
+          (c) => !(c.id === personId && c.officer_id === user?.id),
+        ),
+      );
+    }
   };
 
   const handleStatusChange = (personId, officerId, newStatus) => {
@@ -163,6 +176,11 @@ export default function Dashboard({ user, onLogout }) {
 
   const handleRemoveHistory = (personId) => {
     setHistory(history.filter((h) => h.id !== personId));
+  };
+
+  const handleLogout = () => {
+    onLogout();
+    navigate("/login");
   };
 
   return (
@@ -222,7 +240,7 @@ export default function Dashboard({ user, onLogout }) {
           </button>
         </nav>
 
-        <button className="logout-btn" onClick={onLogout}>
+        <button className="logout-btn" onClick={handleLogout}>
           <span className="logout-icon">🚪</span>
           Logout
         </button>
@@ -291,16 +309,99 @@ function AboutTab() {
       <h1>About This Platform</h1>
       <div className="about-content">
         <p>
-          Welcome to the Compliance Officer Portal. This platform helps you
-          search and monitor sanctioned individuals and entities.
+          Welcome to the Compliance Case Management Platform. This system helps
+          compliance officers and managers screen customers and entities against
+          global sanctions lists using data from OpenSanctions.
         </p>
-        <h3>Features:</h3>
+
+        <h3>Core Features:</h3>
         <ul>
-          <li>Search for individuals by name and country</li>
-          <li>View detailed compliance information</li>
-          <li>Track sanctions status and topics</li>
-          <li>Access biographical data</li>
+          <li>Search 100,000+ sanctioned individuals by name and country</li>
+          <li>Role-based case management (Officer and Manager workflows)</li>
+          <li>Risk assessment with 5-level flag system</li>
+          <li>Comprehensive compliance data and audit trails</li>
+          <li>Real-time case tracking and reassignment</li>
         </ul>
+
+        <h3>Sanctions Topics Reference:</h3>
+        <p style={{ marginBottom: "10px" }}>
+          Understanding the compliance topics that appear in search results:
+        </p>
+        <div style={{ marginLeft: "20px", lineHeight: "1.8" }}>
+          <p>
+            <strong>SANCTION</strong> - Individual or entity subject to
+            international sanctions by governments or bodies like the UN, EU,
+            OFAC
+          </p>
+          <p>
+            <strong>CRIME</strong> - Individuals linked to criminal activities
+            including organized crime, money laundering, or other illicit acts
+          </p>
+          <p>
+            <strong>DEBARMENT</strong> - Entities or individuals barred from
+            government contracts or international organization projects
+          </p>
+          <p>
+            <strong>POI (Person of Interest)</strong> - Individuals of
+            investigative interest to law enforcement or intelligence agencies
+          </p>
+          <p>
+            <strong>PEP (Politically Exposed Person)</strong> - Current or
+            former high-ranking government officials, politicians, or their
+            close associates
+          </p>
+          <p>
+            <strong>EXEC</strong> - Executives or senior management of
+            sanctioned entities or organizations
+          </p>
+          <p>
+            <strong>ASSET.FREEZE</strong> - Persons or entities with frozen
+            assets by government authorities
+          </p>
+          <p>
+            <strong>ROLE.OLIGARCH</strong> - Business magnates with significant
+            political influence, often subject to enhanced scrutiny
+          </p>
+          <p>
+            <strong>FIN.FRAUD</strong> - Financial fraud, embezzlement, or
+            corruption-related offenses
+          </p>
+          <p>
+            <strong>TERROR</strong> - Links to terrorism, terrorist
+            organizations, or terrorist financing
+          </p>
+          <p>
+            <strong>WAR.CRIME</strong> - Individuals associated with war crimes
+            or crimes against humanity
+          </p>
+          <p>
+            <strong>NARCOTICS</strong> - Drug trafficking or narcotics-related
+            criminal activities
+          </p>
+        </div>
+
+        <h3>How It Works:</h3>
+        <ol>
+          <li>
+            <strong>Officers</strong> search for individuals and add them to
+            their cases
+          </li>
+          <li>
+            Cases are reviewed and updated with status (Pending, Flag 1-5)
+          </li>
+          <li>
+            <strong>Managers</strong> review pending cases and assign risk flags
+          </li>
+          <li>Cleared cases move to History for audit purposes</li>
+        </ol>
+
+        <h3>Data Source:</h3>
+        <p>
+          This platform uses the <strong>OpenSanctions</strong> database, a
+          global open-source database of sanctions lists, politically exposed
+          persons, and persons of interest. Data is updated regularly to ensure
+          compliance accuracy.
+        </p>
       </div>
     </div>
   );

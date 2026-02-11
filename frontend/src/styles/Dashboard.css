@@ -8,7 +8,7 @@
 /* Sidebar Styles */
 .dashboard-sidebar {
   width: 280px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #4a5568 0%, #2d3748 100%);
   color: white;
   padding: 20px;
   display: flex;
@@ -79,7 +79,7 @@
 
 .case-count {
   background: #ffd700;
-  color: #667eea;
+  color: #2d3748;
   padding: 2px 8px;
   border-radius: 12px;
   font-size: 12px;
@@ -155,7 +155,7 @@
 .profile-field label {
   display: block;
   font-weight: 600;
-  color: #667eea;
+  color: #4a5568;
   margin-bottom: 8px;
   font-size: 14px;
   text-transform: uppercase;
@@ -184,7 +184,7 @@
 }
 
 .about-content h3 {
-  color: #667eea;
+  color: #4a5568;
   margin-top: 20px;
   margin-bottom: 12px;
 }

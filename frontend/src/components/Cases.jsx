@@ -88,19 +88,25 @@ export default function Cases({
 
   const isManager = user?.role === "manager";
 
-  // For managers, only show pending and flagged cases
-  const displayCases = isManager
-    ? cases.filter(
-        (c) => c.status === "Pending" || c.status?.startsWith("Flag:"),
-      )
-    : cases;
+  const getRoleLabel = (name) => {
+    const match = officers.find((o) => o.name === name);
+    if (match) return match.role === "manager" ? "Manager" : "Officer";
+    if (user?.role === "manager" && user?.name === name) return "Manager";
+    return "Officer";
+  };
 
-  if (displayCases.length === 0 && isManager) {
+  // Show all cases for both managers and officers
+  const displayCases = cases;
+
+  if (displayCases.length === 0) {
     return (
       <div className="cases-container">
         <h1>Cases</h1>
         <div className="empty-cases">
-          <p>No pending or flagged cases to review.</p>
+          <p>
+            No cases added yet. Search for individuals and add them to your
+            cases.
+          </p>
         </div>
       </div>
     );
@@ -159,7 +165,9 @@ export default function Cases({
       <div className="case-info-group">
         {showOfficer && (
           <div className="case-field case-officer">
-            <span className="case-label">Officer:</span>
+            <span className="case-label">
+              {getRoleLabel(person.officer_name)}:{" "}
+            </span>
             <span className="case-value">
               {person.officer_name || "Unknown"}
             </span>
@@ -314,6 +322,29 @@ export default function Cases({
       {/* For Managers: Show grouped by officer */}
       {isManager && (
         <>
+          {/* Active Cases Section - Grouped by Officer */}
+          {activeCases.length > 0 && (
+            <div className="cases-section">
+              <h2 className="section-title">
+                Active Cases ({activeCases.length})
+              </h2>
+              {Object.entries(groupByOfficer(activeCases)).map(
+                ([officerName, cases]) => (
+                  <div key={officerName} className="officer-group">
+                    <h3 className="officer-name">
+                      {getRoleLabel(officerName)}: {officerName}
+                    </h3>
+                    <div className="cases-list">
+                      {cases.map((person) =>
+                        renderCaseRow(person, false, false),
+                      )}
+                    </div>
+                  </div>
+                ),
+              )}
+            </div>
+          )}
+
           {/* Pending Cases Section - Grouped by Officer */}
           {pendingCases.length > 0 && (
             <div className="cases-section pending-section">
@@ -321,7 +352,9 @@ export default function Cases({
               {Object.entries(groupByOfficer(pendingCases)).map(
                 ([officerName, cases]) => (
                   <div key={officerName} className="officer-group">
-                    <h3 className="officer-name">Officer: {officerName}</h3>
+                    <h3 className="officer-name">
+                      {getRoleLabel(officerName)}: {officerName}
+                    </h3>
                     <div className="cases-list">
                       {cases.map((person) =>
                         renderCaseRow(person, true, false),
@@ -340,7 +373,9 @@ export default function Cases({
               {Object.entries(groupByOfficer(flaggedCases)).map(
                 ([officerName, cases]) => (
                   <div key={officerName} className="officer-group">
-                    <h3 className="officer-name">Officer: {officerName}</h3>
+                    <h3 className="officer-name">
+                      {getRoleLabel(officerName)}: {officerName}
+                    </h3>
                     <div className="cases-list">
                       {cases.map((person) =>
                         renderCaseRow(person, true, false),
