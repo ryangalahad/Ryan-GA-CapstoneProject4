@@ -6,7 +6,7 @@ import authService from "./services/authService";
 import "./App.css";
 
 function App() {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [LoggedIn, setLoggedIn] = useState(false);
   const [currentUser, setCurrentUser] = useState(null);
 
   useEffect(() => {
@@ -16,26 +16,26 @@ function App() {
         const user = authService.getCurrentUser();
         if (user) {
           setCurrentUser(user);
-          setIsLoggedIn(true);
+          setLoggedIn(true);
         }
       }
     } catch (error) {
       console.error("Error checking login status:", error);
       // Clear auth data on error
       authService.logout();
-      setIsLoggedIn(false);
+      setLoggedIn(false);
       setCurrentUser(null);
     }
   }, []);
 
   const handleLoginSuccess = (user) => {
     setCurrentUser(user);
-    setIsLoggedIn(true);
+    setLoggedIn(true);
   };
 
   const handleLogout = () => {
     authService.logout();
-    setIsLoggedIn(false);
+    setLoggedIn(false);
     setCurrentUser(null);
   };
 
@@ -45,7 +45,7 @@ function App() {
         <Route
           path="/login"
           element={
-            isLoggedIn ? (
+            LoggedIn ? (
               <Navigate to="/dashboard" replace />
             ) : (
               <AuthPage onLoginSuccess={handleLoginSuccess} />
@@ -55,7 +55,7 @@ function App() {
         <Route
           path="/dashboard"
           element={
-            isLoggedIn ? (
+            LoggedIn ? (
               <Dashboard user={currentUser} onLogout={handleLogout} />
             ) : (
               <Navigate to="/login" replace />
@@ -64,9 +64,7 @@ function App() {
         />
         <Route
           path="/"
-          element={
-            <Navigate to={isLoggedIn ? "/dashboard" : "/login"} replace />
-          }
+          element={<Navigate to={LoggedIn ? "/dashboard" : "/login"} replace />}
         />
       </Routes>
     </BrowserRouter>
