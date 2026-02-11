@@ -15,10 +15,9 @@ export default function Login({ onToggle, onLoginSuccess }) {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
-    const { name, value } = e.target;
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [e.target.name]: e.target.value,
     }));
     setError("");
   };
