@@ -1,19 +1,9 @@
-import { Pool } from "pg";
-import dotenv from "dotenv";
+import { query } from "../database/db.js";
 import { getCountryCode } from "../utils/countryMapping.js";
-
-dotenv.config();
-const pool = new Pool({
-  user: process.env.DB_USER || "postgres",
-  host: process.env.DB_HOST || "localhost",
-  database: process.env.DB_NAME || "capstone",
-  password: process.env.DB_PASSWORD,
-  port: process.env.DB_PORT || 5432,
-});
 
 // Search by name (caption)
 export async function searchByName(name) {
-  const result = await pool.query(
+  const result = await query(
     `SELECT 
       id, caption, schema, entity_id, nationality, birthdate,
       gender, first_name, last_name, name_aliases, position, address, 
@@ -49,7 +39,7 @@ export async function searchByNationality(nationality) {
     countryCode = getCountryCode(nationality) || nationality;
   }
 
-  const result = await pool.query(
+  const result = await query(
     `SELECT 
       id, caption, schema, entity_id, nationality, birthdate,
       gender, first_name, last_name, name_aliases, position, address, 
@@ -69,8 +59,9 @@ export async function searchByNationality(nationality) {
       ) as properties,
       created_at
     FROM name_entities 
-    WHERE nationality = $1`,
-    [countryCode],
+    WHERE (properties->>'country')::text ILIKE $1 
+       OR (properties->'country'->>0)::text ILIKE $1`,
+    [`%${countryCode}%`],
   );
   return result.rows;
 }

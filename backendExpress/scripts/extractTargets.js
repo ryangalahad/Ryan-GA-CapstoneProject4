@@ -7,8 +7,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const INPUT_PATH = path.join(__dirname, "../data/targets.nested.json");
-const OUTPUT_PATH = path.join(__dirname, "../data/targets-40k.json");
-const LIMIT = 40000;
+const OUTPUT_PATH = path.join(__dirname, "../data/targets-100k.json");
+const LIMIT = 100000;
 
 async function extractTargets() {
   try {
