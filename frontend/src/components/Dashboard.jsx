@@ -81,7 +81,7 @@ export default function Dashboard({ user, onLogout }) {
           Authorization: `Bearer ${token}`,
         },
       });
-      if (data.success) {
+      if (data.success) { // check
         // Filter to only show officers
         setOfficers(data.data.filter((u) => u.role === "officer"));
       }
