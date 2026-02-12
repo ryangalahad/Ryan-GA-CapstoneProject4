@@ -187,7 +187,7 @@ export default function Dashboard({ user, onLogout }) {
       {/* Left Sidebar Navigation */}
       <div className="dashboard-sidebar">
         <div className="sidebar-header">
-          <h2>Compliance Officer</h2>
+          <h2>Compliance System</h2>
           <p className="user-info">{user?.name || "User"}</p>
         </div>
 
