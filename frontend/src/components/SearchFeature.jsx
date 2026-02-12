@@ -45,7 +45,7 @@ export default function SearchFeature({ onAddToCase }) {
 
     try {
       const token = authService.getAccessToken();
-      const params = new URLSearchParams();
+      const params = new URLSearchParams(); // check
       if (name.trim()) params.append("name", name);
       if (country) params.append("nationality", country);
 
@@ -74,10 +74,6 @@ export default function SearchFeature({ onAddToCase }) {
     }
   };
 
-  const getCountryName = (code) => {
-    const country = countries.find((c) => c.code === code);
-    return country ? country.name : code;
-  };
 
   const formatCountryWithCode = (code) => {
     const country = countries.find((c) => c.code === code);
