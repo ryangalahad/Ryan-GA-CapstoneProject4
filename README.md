@@ -244,8 +244,6 @@ Future enhancements to scale this platform into a production-grade compliance sy
 - **Scalability** - Better handles apps with 10+ views without performance degradation
 - **Deep Linking** - Users can bookmark specific pages and share direct links
 - **Browser History** - Proper back/forward button functionality
-- **Code Splitting** - Load components only when needed, reducing initial bundle size
-- **SEO-Friendly** - Each route gets its own URL for better discoverability
 
 ### 3. Advanced Fuzzy Matching & Smart Search
 
@@ -256,7 +254,6 @@ Future enhancements to scale this platform into a production-grade compliance sy
 - **Levenshtein Distance** - Calculate character-by-character similarity to catch typos ("Micheal" → "Michael")
 - **Soundex/Metaphone** - Phonetic matching for names that sound similar but are spelled differently ("Smith" → "Smythe")
 - **Trigram Similarity** - PostgreSQL's `pg_trgm` extension for substring matching
-- **Weighted Scoring** - Rank results by match confidence (95% match, 87% match, etc.)
 
 **Impact**: Dramatically reduces false negatives in compliance screening, ensuring suspicious individuals aren't missed due to spelling variations or data entry errors.
 
@@ -269,10 +266,7 @@ Future enhancements to scale this platform into a production-grade compliance sy
 - **Pie Charts** - Visual breakdown of pending vs. flagged vs. cleared cases
 - **Status Distribution** - See at-a-glance how many cases are at each risk level (Flag 1-5)
 - **Officer Workload** - Compare case counts across team members to balance assignments
-- **Trend Analysis** - Track case resolution rates over time (weekly/monthly)
-- **Risk Heat Map** - Identify high-risk patterns by country, entity type, or time period
 
-**Technology Stack**: Integrate Chart.js or Recharts for interactive visualizations, with real-time updates as case statuses change.
 
 ### 5. Comprehensive Audit Trail & Logging System
 
@@ -284,8 +278,6 @@ Future enhancements to scale this platform into a production-grade compliance sy
 - **Change History** - Maintain a full audit trail showing who modified what and when
 - **Compliance Reporting** - Generate downloadable reports for regulatory audits
 - **Timestamped Records** - All actions logged with precise timestamps and user attribution
-- **Immutable Logs** - Prevent tampering by storing logs in append-only database tables
-- **Search & Filter** - Allow managers to query logs by date range, user, action type, or entity
 
 **Regulatory Value**: Critical for financial institutions that must demonstrate compliance with KYC (Know Your Customer) and AML (Anti-Money Laundering) regulations. Auditors can verify that all screening decisions were properly documented and justified.
 
@@ -341,7 +333,7 @@ CREATE TABLE IF NOT EXISTS cases (
 );
 ```
 
-**Note**: The `name_entities` table will be created automatically by the data loading script in Step 3. (Skip if user already have targets-100k.json file )
+**Note**: The `name_entities` table will be created automatically by the data loading script in Step 3. ((Skip if you already have targets-100k.json file - To be placed in /backendExpress/data/target-100k.json )
 
 ---
 
@@ -373,6 +365,7 @@ DB_PORT=5432
 JWT_SECRET=your_secret_key_here
 JWT_REFRESH_SECRET=your_refresh_secret_here
 
+NODE_ENV=development
 PORT=3000
 ```
 
@@ -382,7 +375,7 @@ PORT=3000
 
 ### Step 3: Load Sanctions Data
 
-#### (Skip if user already have targets-100k.json file )
+#### (Skip if you already have targets-100k.json file - To be placed in /backendExpress/data/target-100k.json )
 
 #### 3.1 Check if Data File Exists
 
