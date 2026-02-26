@@ -1,6 +1,7 @@
 # Ignore large OpenSanctions data file
 backendExpress/data/targets-100k.json
 backendExpress/data/targets.nested.json
+backendExpress/data/watchlist.json
 # Compiled source #
 ###################
 *.com

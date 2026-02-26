@@ -2,6 +2,7 @@ import express from "express";
 import usersRouter from "./routes/users.js";
 import casesRouter from "./routes/cases.js";
 import nameEntitiesRouter from "./routes/nameEntities.js";
+import chatbotRouter from "./routes/chatbot.js";
 
 const app = express();
 
@@ -25,6 +26,7 @@ app.use(express.json());
 app.use("/api/users", usersRouter);
 app.use("/api/cases", casesRouter);
 app.use("/api/name-entities", nameEntitiesRouter);
+app.use("/api/chatbot", chatbotRouter);
 
 // Health check endpoint
 app.get("/api/health", (req, res) => {

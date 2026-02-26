@@ -7,6 +7,7 @@ A full-stack web application for compliance officers and managers to screen cust
 ## Table of Contents
 
 - [App Features](#app-features)
+- [Chatbot Assistant](#chatbot-assistant)
 - [Technology Stack](#technology-stack)
 - [Planning Phase](#planning-phase)
 - [Component Tree & Architecture](#component-tree--architecture)
@@ -36,6 +37,74 @@ A full-stack web application for compliance officers and managers to screen cust
 - **User Authentication**: Secure login/registration with JWT tokens (access & refresh tokens)
 - **Comprehensive Person Details**: View birthdate, gender, nationality, address, sanctions topics (SANCTION, PEP, CRIME, TERROR, etc.)
 - **Country Filtering**: Search with 200+ countries mapped from country codes to full names
+- **Chatbot Assistant**: Built-in menu-driven chatbot for quick Q&A — role-aware responses for officers and managers
+
+---
+
+## Chatbot Assistant
+
+A lightweight, **menu-driven chatbot** is embedded in the Dashboard as a floating widget (bottom-right corner). It appears **only after the user has logged in** and provides role-aware responses based on whether the user is an Officer or Manager.
+
+### How It Works
+
+1. Log in as an Officer or Manager.
+2. Click the **💬** button in the bottom-right corner of the Dashboard.
+3. The bot greets you and presents a numbered menu.
+4. Pick an option (click a quick-reply button or type the number).
+5. Read the answer, then choose **↩ Back to main menu** to continue.
+
+### Available Options
+
+```
+┌─────┬──────────────────────────────────────┐
+│  #  │  Option                              │
+├─────┼──────────────────────────────────────┤
+│  1  │  How to use the app  (role-aware)    │
+│  2  │  What is my current role / status?   │
+│  3  │  Case statistics (pending & flagged) │
+│  4  │  Total registered users  (100K)      │
+│  5  │  Contact support                     │
+└─────┴──────────────────────────────────────┘
+```
+
+### Chatbot UI Illustration
+
+```
+ ┌──────────────────────────────────────┐
+ │  🤖  Compliance Assistant            │
+ ├──────────────────────────────────────┤
+ │                                      │
+ │  ┌─────────────────────────────────┐ │
+ │  │ 👋 Hi there! I'm your           │ │
+ │  │ Compliance Assistant.            │ │
+ │  │ Please choose an option:         │ │
+ │  └─────────────────────────────────┘ │
+ │                                      │
+ │  [ 1. How to use the app ]          │
+ │  [ 2. My current role ]             │
+ │  [ 3. Case statistics ]             │
+ │  [ 4. Total users ]                 │
+ │  [ 5. Contact support ]             │
+ │                                      │
+ ├──────────────────────────────────────┤
+ │  Type a number or message…    [ ➤ ] │
+ └──────────────────────────────────────┘
+```
+
+### Chatbot Architecture
+
+```
+  React Frontend (Dashboard)       Express Backend
+  ──────────────────────────       ─────────────────────
+  ChatbotWidget.jsx                routes/chatbot.js
+  User clicks option ──POST /api/chatbot──▶ checkAuth middleware
+   (Bearer token in header)                     │
+                                          chatbotController.js
+                                          (role-aware lookup)
+                                                │
+  Render bot bubble  ◀── JSON response ────────┘
+  + quick-reply buttons
+```
 
 ---
 
@@ -123,6 +192,10 @@ A full-stack web application for compliance officers and managers to screen cust
 - `DELETE /api/cases/{id}` - Delete case
 - `POST /api/cases/{caseId}/assign` - Assign case to officer (Manager only)
 - `POST /api/cases/{caseId}/entities` - Add sanctioned entity to case
+
+#### Chatbot Endpoint:
+
+- `POST /api/chatbot` - Send `{ "message": "<option>" }` and receive a role-aware chatbot response (requires auth)
 
 ---
 

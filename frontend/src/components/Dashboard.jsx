@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import SearchFeature from "./SearchFeature";
 import Cases from "./Cases";
 import History from "./History";
+import ChatbotWidget from "./ChatbotWidget";
 import "../styles/Dashboard.css";
 
 export default function Dashboard({ user, onLogout }) {
@@ -272,6 +273,9 @@ export default function Dashboard({ user, onLogout }) {
         {activeTab === "profile" && <ProfileTab user={user} />}
         {activeTab === "about" && <AboutTab />}
       </div>
+
+      {/* Floating chatbot — visible on all dashboard tabs */}
+      <ChatbotWidget />
     </div>
   );
 }
